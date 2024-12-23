@@ -96,7 +96,6 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-# Function to visualize data
 def visualize_data(data):
     st.header("Data Visualization")
 
@@ -105,26 +104,49 @@ def visualize_data(data):
 
     # Metrics filter
     metrics = ['Non-Admitted Clock Stops', 'Admitted Clock Stops', 'Incomplete Pathways', 'Incomplete Admitted Pathways', 'Clock Starts']
-    selected_metric = st.selectbox("Select Metric", metrics)
 
-    # Split by TF Name
-    split_by_tf = st.checkbox("Split by TF Name")
+    # Two charts side by side
+    col1, col2 = st.columns(2)
 
-    if split_by_tf:
-        fig = px.bar(filtered_data[filtered_data['Type'] == selected_metric], 
-                     x='Month', 
-                     y='Pathways', 
-                     color='TF Name', 
-                     title=f"{selected_metric} Split by TF Name",
-                     barmode='stack')
-    else:
-        aggregated_data = filtered_data[filtered_data['Type'] == selected_metric].groupby('Month', as_index=False)['Pathways'].sum()
-        fig = px.line(aggregated_data, 
-                      x='Month', 
-                      y='Pathways', 
-                      title=f"Total {selected_metric} Over Time")
+    with col1:
+        selected_metric1 = st.selectbox("Select Metric for Chart 1", metrics, key="metric1")
+        split_by_tf1 = st.checkbox("Split by TF Name (Chart 1)", key="split_tf1")
 
-    st.plotly_chart(fig)
+        if split_by_tf1:
+            fig1 = px.bar(filtered_data[filtered_data['Type'] == selected_metric1], 
+                         x='Month', 
+                         y='Pathways', 
+                         color='TF Name', 
+                         title=f"{selected_metric1} Split by TF Name",
+                         barmode='stack')
+        else:
+            aggregated_data1 = filtered_data[filtered_data['Type'] == selected_metric1].groupby('Month', as_index=False)['Pathways'].sum()
+            fig1 = px.line(aggregated_data1, 
+                          x='Month', 
+                          y='Pathways', 
+                          title=f"Total {selected_metric1} Over Time")
+
+        st.plotly_chart(fig1)
+
+    with col2:
+        selected_metric2 = st.selectbox("Select Metric for Chart 2", metrics, key="metric2")
+        split_by_tf2 = st.checkbox("Split by TF Name (Chart 2)", key="split_tf2")
+
+        if split_by_tf2:
+            fig2 = px.bar(filtered_data[filtered_data['Type'] == selected_metric2], 
+                         x='Month', 
+                         y='Pathways', 
+                         color='TF Name', 
+                         title=f"{selected_metric2} Split by TF Name",
+                         barmode='stack')
+        else:
+            aggregated_data2 = filtered_data[filtered_data['Type'] == selected_metric2].groupby('Month', as_index=False)['Pathways'].sum()
+            fig2 = px.line(aggregated_data2, 
+                          x='Month', 
+                          y='Pathways', 
+                          title=f"Total {selected_metric2} Over Time")
+
+        st.plotly_chart(fig2)
 
 # Function to set trajectories
 def set_trajectories(data):
