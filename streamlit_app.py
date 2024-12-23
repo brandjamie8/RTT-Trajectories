@@ -97,7 +97,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def visualize_data(data):
-    st.header("Data Visualization")
+    st.header("Data Visualisation")
 
     # Filter dataframe
     filtered_data = filter_dataframe(data)
