@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-from streamlit_extras.dataframe_filter import filter_dataframe
+#from streamlit_extras.dataframe_filter import filter_dataframe
 
 # Function to load data
 def load_data():
