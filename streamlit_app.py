@@ -1,12 +1,15 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+from streamlit_extras.dataframe_filter import filter_dataframe
 
 # Function to load data
 def load_data():
     uploaded_file = st.file_uploader("Upload your RTT dataset (CSV format)", type="csv")
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
+        # Rename 'Clock Stops' to 'Non-Admitted Clock Stops'
+        data['Type'] = data['Type'].replace({'Clock Stops': 'Non-Admitted Clock Stops'})
         return data
     else:
         st.warning("Please upload a dataset to proceed.")
@@ -16,22 +19,25 @@ def load_data():
 def visualize_data(data):
     st.header("Data Visualization")
 
+    # Filter dataframe
+    filtered_data = filter_dataframe(data)
+
     # Metrics filter
-    metrics = ['Clock Stops', 'Admitted Clock Stops', 'Incomplete Pathways', 'Incomplete Admitted Pathways', 'Clock Starts']
+    metrics = ['Non-Admitted Clock Stops', 'Admitted Clock Stops', 'Incomplete Pathways', 'Incomplete Admitted Pathways', 'Clock Starts']
     selected_metric = st.selectbox("Select Metric", metrics)
 
     # Split by TF Name
     split_by_tf = st.checkbox("Split by TF Name")
 
     if split_by_tf:
-        fig = px.bar(data[data['Type'] == selected_metric], 
+        fig = px.bar(filtered_data[filtered_data['Type'] == selected_metric], 
                      x='Month', 
                      y='Pathways', 
                      color='TF Name', 
                      title=f"{selected_metric} Split by TF Name",
                      barmode='stack')
     else:
-        aggregated_data = data[data['Type'] == selected_metric].groupby('Month', as_index=False)['Pathways'].sum()
+        aggregated_data = filtered_data[filtered_data['Type'] == selected_metric].groupby('Month', as_index=False)['Pathways'].sum()
         fig = px.line(aggregated_data, 
                       x='Month', 
                       y='Pathways', 
