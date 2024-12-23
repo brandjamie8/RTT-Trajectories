@@ -19,8 +19,11 @@ def load_data():
 def visualize_data(data):
     st.header("Data Visualization")
 
-    # Filter dataframe
-    filtered_data = dataframe_explorer(data)
+    # Filter dataframe with specific filter configuration
+    filter_config = {
+        'TF Name': {'filter_type': 'values'},  # Force 'TF Name' to use values instead of patterns
+    }
+    filtered_data = dataframe_explorer(data, filter_config=filter_config)
 
     # Metrics filter
     metrics = ['Non-Admitted Clock Stops', 'Admitted Clock Stops', 'Incomplete Pathways', 'Incomplete Admitted Pathways', 'Clock Starts']
@@ -44,6 +47,7 @@ def visualize_data(data):
                       title=f"Total {selected_metric} Over Time")
 
     st.plotly_chart(fig)
+
 
 # Function to set trajectories
 def set_trajectories(data):
